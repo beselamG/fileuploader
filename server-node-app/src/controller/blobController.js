@@ -12,10 +12,14 @@ const getBlobs = async (req, res) => {
 
 const uploadBlobs = async (req, res) => {
   upload(req, res, (err) => {
-    const containerName = req.body.containerName;
-    const file = req.file.buffer;
-    const fileName = req.file.originalname;
-    blobUploader(res, fileName, file, containerName);
+    if (req.file != undefined) {
+      const containerName = req.body.containerName;
+      const file = req.file.buffer;
+      const fileName = req.file.originalname;
+      blobUploader(res, fileName, file, containerName);
+    } else {
+      res.status(400).send({ data: null, error: "file not available" });
+    }
   });
 };
 

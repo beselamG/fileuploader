@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 const blobRouter = require("./routes/blobRoute.js");
+const conatinerRouter = require("./routes/containerRoute.js");
 const app = express()
 const requestLogger = (request, response, next) => {
     console.log('Method:', request.method)
@@ -29,6 +30,7 @@ app.use(cors())
 const PORT = 3001
 
 app.use('/blob',blobRouter)
+app.use('/container',conatinerRouter)
 app.use(unknownEndpoint)
 app.use(errorHandler)
 

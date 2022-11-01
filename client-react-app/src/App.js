@@ -4,6 +4,7 @@ import {
   useMsal,
 } from "@azure/msal-react";
 import "./App.css";
+import Container from "./components/Container";
 import FileUploader from "./components/FileUploader";
 import { PageLayout } from "./components/PageLayout";
 import ProfileContent from "./components/ProfileContent";
@@ -15,6 +16,7 @@ function App() {
     <>
       <AuthenticatedTemplate>
         <SignOutButton />
+        <Container/>
         <FileUploader/>
       </AuthenticatedTemplate>
       <UnauthenticatedTemplate>

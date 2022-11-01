@@ -11,6 +11,7 @@ const Container = () => {
     event.preventDefault();
     if (containerName.length > 2) {
       createContainer(containerName);
+      setContainerName('')
     } else {
       alert("container name length must be 3 or more ");
     }

@@ -1,6 +1,6 @@
 const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
-const defaultAzureCredential = new DefaultAzureCredential();
+
 const accountName = "beseassess";
 
 const multer = require("multer");

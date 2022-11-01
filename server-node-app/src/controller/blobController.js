@@ -7,8 +7,66 @@ const multer = require("multer");
 let upload = multer().single("file");
 
 const getBlobs = async (req, res) => {
-  res.send("blob listed");
+  try {
+    const blobs = [];
+    const blobServiceClient = new BlobServiceClient(
+      `https://${accountName}.blob.core.windows.net`,
+      new DefaultAzureCredential()
+    );
+
+    let containers = blobServiceClient.listContainers();
+    for await (const container of containers) {
+      const containerClient = blobServiceClient.getContainerClient(
+        container.name
+      );
+      const blobList = containerClient.listBlobsFlat({ includeVersions: true });
+
+      for await (const blob of blobList) {
+        const blobClient = containerClient.getBlobClient(blob.name);
+        blobs.push({
+          blobName: blob.name,
+          containerName: container.name,
+          url: blobClient.url,
+          versionId: blob.versionId,
+        });
+      }
+    }
+    res.send({ data: blobs, error: false, message: "" });
+  } catch (error) {
+    res.status(400).send({ data: null, error: "Something went wrong!" });
+  }
 };
+
+const getBlobsWithVersions = async (req, res) => {
+    try {
+      const blobs = [];
+      const blobServiceClient = new BlobServiceClient(
+        `https://${accountName}.blob.core.windows.net`,
+        new DefaultAzureCredential()
+      );
+  
+      let containers = blobServiceClient.listContainers();
+      for await (const container of containers) {
+        const containerClient = blobServiceClient.getContainerClient(
+          container.name
+        );
+        const blobList = containerClient.listBlobsFlat({ includeVersions: true });
+  
+        for await (const blob of blobList) {
+          const blobClient = containerClient.getBlobClient(blob.name);
+          blobs.push({
+            blobName: blob.name,
+            containerName: container.name,
+            url: blobClient.url,
+            versionId: blob.versionId,
+          });
+        }
+      }
+      res.send({ data: blobs, error: false, message: "" });
+    } catch (error) {
+      res.status(400).send({ data: null, error: "Something went wrong!" });
+    }
+  };
 
 const uploadBlobs = async (req, res) => {
   upload(req, res, (err) => {
@@ -18,7 +76,7 @@ const uploadBlobs = async (req, res) => {
       const fileName = req.file.originalname;
       blobUploader(res, fileName, file, containerName);
     } else {
-      res.status(400).send({ data: null, error: "file not available" });
+      res.status(400).send({ data: null, error: "Something went wrong!" });
     }
   });
 };
@@ -41,4 +99,4 @@ const blobUploader = async (res, fileName, file, containerName) => {
   }
 };
 
-module.exports = { getBlobs, uploadBlobs };
+module.exports = { getBlobs, uploadBlobs , getBlobsWithVersions};

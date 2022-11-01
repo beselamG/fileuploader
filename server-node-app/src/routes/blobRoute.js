@@ -5,6 +5,8 @@ const blobConstroller = require('../controller/blobController.js')
 // Home page route.
 router.get("/", blobConstroller.getBlobs);
 
+router.get("/", blobConstroller.getBlobsWithVersions);
+
 // About page route.
 router.post("/",blobConstroller.uploadBlobs);
 

@@ -12,12 +12,9 @@ const getContainers = async (req, res) => {
     );
 
     let containers = blobServiceClient.listContainers();
-    let containerItem = await containers.next();
-    while (!containerItem.done) {
-      console.log(`${containerItem.value.name}`);
-      containerList.push(containerItem.value.name);
-      containerItem = await containers.next();
-    }
+    for await (const container of containers) {
+       containerList.push(container.name)
+      }
     res.send({ data: containerList, error: false, message: "" });
   } catch (error) {
     res.status(400).send({ data: "", error: "Something went wrong!" });

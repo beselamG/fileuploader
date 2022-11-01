@@ -13,7 +13,6 @@ const FileUploader = () =>{
 
   const handleFileSubmit =  async (event) => {
     event.preventDefault();
-    const name = file.name
     uploadBlob("class",file)
   }
 

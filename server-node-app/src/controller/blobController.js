@@ -1,43 +1,40 @@
-
 const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const defaultAzureCredential = new DefaultAzureCredential();
+const accountName = "beseassess";
 
-const  multer = require('multer');
-let upload = multer().single('file');
+const multer = require("multer");
+let upload = multer().single("file");
 
- const getBlobs = async (req,res) => {
-    res.send("blob listed")
-}
+const getBlobs = async (req, res) => {
+  res.send("blob listed");
+};
 
- const uploadBlobs = async (req,res) => {
- upload(req, res , err => { 
-    const containerName = "classss"
-    const file = req.file.buffer
-    const name = req.file.originalname
-      mm(res, name, file,containerName)
-   })
-}
+const uploadBlobs = async (req, res) => {
+  upload(req, res, (err) => {
+    const containerName = req.body.containerName;
+    const file = req.file.buffer;
+    const fileName = req.file.originalname;
+    blobUploader(res, fileName, file, containerName);
+  });
+};
 
-const mm = async (res,name,file,containerName) => {
-     try {
-            const accountName = "beseassess"
-
+const blobUploader = async (res, fileName, file, containerName) => {
+  try {
     const blobServiceClient = new BlobServiceClient(
-        `https://${accountName}.blob.core.windows.net`,
-        new DefaultAzureCredential()
+      `https://${accountName}.blob.core.windows.net`,
+      new DefaultAzureCredential()
     );
-     const containerClient = blobServiceClient.getContainerClient(containerName);
-         await containerClient.createIfNotExists();
-        const blockBlobClient = containerClient.getBlockBlobClient(name);
-        const uploadBlobResponse = await blockBlobClient.upload(file, file.length);
-        console.log(`Upload block blob ${name} successfully`, uploadBlobResponse.requestId);
-        res.send("sucessfull")
-    } catch (error) {
-        console.log(error);
-        res.status(400).send('Something went wrong!');
-    }
-}
 
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    await containerClient.createIfNotExists();
+    const blockBlobClient = containerClient.getBlockBlobClient(fileName);
+    await blockBlobClient.upload(file, file.length);
+    res.send({ data: "successfull", error: false });
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ data: null, error: "Something went wrong!" });
+  }
+};
 
-module.exports = {getBlobs,uploadBlobs}
+module.exports = { getBlobs, uploadBlobs };

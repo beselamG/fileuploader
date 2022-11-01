@@ -19,7 +19,7 @@ const getBlobs = async (req, res) => {
       const containerClient = blobServiceClient.getContainerClient(
         container.name
       );
-      const blobList = containerClient.listBlobsFlat({ includeVersions: true });
+      const blobList = containerClient.listBlobsFlat();
 
       for await (const blob of blobList) {
         const blobClient = containerClient.getBlobClient(blob.name);
@@ -27,7 +27,6 @@ const getBlobs = async (req, res) => {
           blobName: blob.name,
           containerName: container.name,
           url: blobClient.url,
-          versionId: blob.versionId,
         });
       }
     }

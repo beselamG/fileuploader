@@ -10,6 +10,9 @@ param tenantId string
 @description('object id for user name B')
 param objectIdB string 
 
+@description('object id for an app')
+param objectIdApp string 
+
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: name
@@ -37,6 +40,25 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
           ]
         }
       }
+      {
+        tenantId: tenantId
+        objectId: objectIdApp
+        permissions: {
+          keys: [
+            'get'
+            'list'
+          ]
+          secrets: [
+            'get'
+            'list'
+          ]
+          certificates: [
+            'get'
+            'list'
+          ]
+        }
+      }
+      
     ]
     sku: {
       name: 'standard'

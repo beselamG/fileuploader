@@ -1,18 +1,39 @@
 param location string = resourceGroup().location
 param kvName string
 param objectId string 
+param objectIdApp string 
 param tenantId string 
 param storageAccountName string
 param frontWebApp string 
 param backendWebApp string 
 param appInsightFront string 
 param appInsightBackend string
+param appConfigName string
+
+
+resource appConfigStore 'Microsoft.AppConfiguration/configurationStores@2022-05-01' = {
+  location: location
+  properties: {
+    encryption: {
+    }
+    disableLocalAuth: false
+
+    softDeleteRetentionInDays: 7
+    enablePurgeProtection: false
+  }
+  sku: {
+    name: 'standard'
+  }
+  name: appConfigName
+}
+
 
 module keyVault 'module/keyvault.bicep' = {
   name: 'keuvault'
   params: {
     location:location
     name: kvName
+    objectIdApp:objectIdApp
     objectIdB:objectId 
     tenantId: tenantId
   }
@@ -91,6 +112,18 @@ module webAppBack 'module/webAppService.bicep' = {
   }
 }
 
+resource configStoreValueRcApi 'Microsoft.AppConfiguration/configurationStores/keyValues@2021-10-01-preview' = {
+  name: 'REACT_APP_API'
+  parent: appConfigStore
+  properties: {
+    contentType: 'string'
+    value: 'https://${webAppBack.outputs.name}.azurewebsites.net'
+  }
+  dependsOn:[webAppBack]
+}
+
+
+
 module webAppFront 'module/webAppService.bicep' = {
   name: 'frontendWebApp'
   params: {
@@ -107,12 +140,26 @@ module webAppFront 'module/webAppService.bicep' = {
         value: '~16'
       }
       {
-        name:'REACT_APP_API'
-        value:'https://${webAppBack.outputs.name}.azurewebsites.net'
+        name: 'REACT_APP_API'
+        value: 'https://${webAppBack.outputs.name}.azurewebsites.net'
+      }
+      {
+        name: 'REACT_APP_APP_CONFIG_CON_ST'
+        value: filter(appConfigStore.listKeys().value, k => k.name == 'Primary Read Only')[0].connectionString
       }
     ]
   }
   dependsOn:[webAppBack,appInsightFrontend]
+}
+
+resource configStoreValueRedApi 'Microsoft.AppConfiguration/configurationStores/keyValues@2021-10-01-preview' = {
+  name: 'REACT_APP_REDIRECT'
+  parent: appConfigStore
+  properties: {
+    contentType: 'string'
+    value: 'https://${webAppFront.outputs.name}.azurewebsites.net'
+  }
+  dependsOn:[webAppFront]
 }
 
 

@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors');
-const blobRouter = require("./routes/blobRoute.js");
-const conatinerRouter = require("./routes/containerRoute.js");
+const blobRouter = require("./src/routes/blobRoute.js");
+const conatinerRouter = require("./src/routes/containerRoute.js");
 const app = express()
 const PORT = process.env.PORT || 3001;
 
@@ -32,6 +32,12 @@ app.use(cors())
 
 app.use('/blob',blobRouter)
 app.use('/container',conatinerRouter)
+app.get('/ping',(req,res)=>{
+    res.send('pong')
+})
+app.get('/',(req,res)=>{
+    res.send('hello')
+})
 app.use(unknownEndpoint)
 app.use(errorHandler)
 

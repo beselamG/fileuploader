@@ -25,6 +25,13 @@
     },
     "appInsightBackend":{
       "value": "appInsightBack"
+    },
+    "appConfigName":{
+      "value": "fileUploaderAppConfig"
+    },
+    "objectIdApp":{
+      "value": "d2a26c4f-8cb7-457d-a693-16c2acaedcdd"
     }
+
   }
 }

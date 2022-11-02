@@ -6,25 +6,25 @@ import { RequestAccessToken } from "../services/mainService";
 
 const ProfileContent = () => {
   const { instance, accounts } = useMsal();
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessToken] = useState();
   const [localAccountId, setLocalAccountId] = useState(null);
 
   const name = accounts[0] && accounts[0].name;
 
-const getAccessToken = async () =>{
-    const req  = await RequestAccessToken(instance,accounts)
-    const accessToken = req.accessToken;
-    setAccessToken(accessToken)
-    const localAccountId = accounts[0].localAccountId
-    setLocalAccountId(localAccountId)
-}
+  const getAccessToken = async () => {
+    const req = await RequestAccessToken(instance, accounts);
 
+    if (req?.accessToken !== undefined) {
+      const userAccessToken = req.accessToken;
+      setAccessToken(userAccessToken);
+      const localAccountId = accounts[0].localAccountId;
+      setLocalAccountId(localAccountId);
+    }
+  };
 
   useEffect(() => {
-    getAccessToken()
+    getAccessToken();
   }, []);
-
-
 
   return (
     <>
@@ -38,5 +38,4 @@ const getAccessToken = async () =>{
   );
 };
 
-
-export default ProfileContent ; 
+export default ProfileContent;

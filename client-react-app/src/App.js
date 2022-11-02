@@ -1,23 +1,20 @@
 import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
-  useMsal,
 } from "@azure/msal-react";
 import "./App.css";
-import Container from "./components/Container";
-import FileUploader from "./components/FileUploader";
-import { PageLayout } from "./components/PageLayout";
-import ProfileContent from "./components/ProfileContent";
+import AuthenticatedMain from "./components/AuthenticatedMain";
 import { SignInButton } from "./components/SignInButton";
-import { SignOutButton } from "./components/SignOutButton";
 
 function App() {
+
+  console.log(process.env);
+
+
   return (
     <>
       <AuthenticatedTemplate>
-        <SignOutButton />
-        <Container/>
-        <FileUploader/>
+       <AuthenticatedMain/>
       </AuthenticatedTemplate>
       <UnauthenticatedTemplate>
         <SignInButton />

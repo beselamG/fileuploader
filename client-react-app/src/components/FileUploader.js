@@ -13,7 +13,8 @@ const FileUploader = () => {
 
   const handleFileSubmit = async (event) => {
     event.preventDefault();
-    if (selectedContainer.length > 1 && file !== undefined) {
+    if (selectedContainer?.length > 1 && file !== undefined) {
+        console.log(selectedContainer);
       uploadBlob(selectedContainer, file);
     } else {
       alert("unable to upload, check the fields are correct");
@@ -26,7 +27,7 @@ const FileUploader = () => {
 
   const getContainerList = async () => {
     const response = await getContainers();
-    if (response.data != null) {
+    if (response?.data != null) {
       setContainers(response.data);
       setSelectedContainer(response.data[0])
     }

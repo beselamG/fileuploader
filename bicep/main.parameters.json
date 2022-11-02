@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "kvName":{
+      "value": "fileUploaderAssmKeyVault"
+    },
+    "objectId":{
+      "value": "e34c72ac-34c6-4650-92df-c7b33171e903"
+    },
+    "tenantId":{
+      "value": "031e4f4a-6a35-45e0-a98e-107900032d62"
+    },
+    "storageAccountName":{
+      "value": "fileuploaderassmstorage"
+    },
+    "frontWebApp":{
+      "value": "fileUploaderAssesFront"
+    },
+    "backendWebApp":{
+      "value": "fileUploaderAssesBack"
+    },
+    "appInsightFront":{
+      "value": "appInsightFront"
+    },
+    "appInsightBackend":{
+      "value": "appInsightBack"
+    }
+  }
+}

@@ -7,15 +7,28 @@ const BlobList = () => {
   // const [roles, setRoles] = useState([]);
   const [blobs, setBlobs] = useState([]);
   const [roles] = useContext(UserRoleContext);
+  const getBlobForWritter =async () => {
+    const response = await getBlobsWithVersions();
+    if (response?.data !== undefined) {
+        console.log('hereee');
+        setBlobs(response.data);
+    }
+  }
+
+  const getBlobForReader =async () => {
+    const response =  await getBlobs();
+    if (response?.data !== undefined) {
+        console.log('hereee');
+        setBlobs(response.data);
+    }
+  }
 
   const getBlobList = async () => {
     if (roles.includes("app.writer")) {
-      const response = await getBlobsWithVersions();
-      setBlobs(response.data);
+    getBlobForWritter()
     }
     if (roles.includes("app.reader") && !roles.includes("app.writer")) {
-      const response = await getBlobs();
-      setBlobs(response.data);
+     getBlobForReader()
     }
   };
 

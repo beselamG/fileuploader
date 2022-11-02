@@ -4,15 +4,13 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 const accountName = "beseassess";
 
 const multer = require("multer");
+const { getBlobService } = require("../keyVault");
 let upload = multer().single("file");
 
 const getBlobs = async (req, res) => {
   try {
     const blobs = [];
-    const blobServiceClient = new BlobServiceClient(
-      `https://${accountName}.blob.core.windows.net`,
-      new DefaultAzureCredential()
-    );
+    const blobServiceClient = await getBlobService()
 
     let containers = blobServiceClient.listContainers();
     for await (const container of containers) {
@@ -39,10 +37,7 @@ const getBlobs = async (req, res) => {
 const getBlobsWithVersions = async (req, res) => {
     try {
       const blobs = [];
-      const blobServiceClient = new BlobServiceClient(
-        `https://${accountName}.blob.core.windows.net`,
-        new DefaultAzureCredential()
-      );
+      const blobServiceClient =  await getBlobService()
   
       let containers = blobServiceClient.listContainers();
       for await (const container of containers) {
@@ -82,11 +77,7 @@ const uploadBlobs = async (req, res) => {
 
 const blobUploader = async (res, fileName, file, containerName) => {
   try {
-    const blobServiceClient = new BlobServiceClient(
-      `https://${accountName}.blob.core.windows.net`,
-      new DefaultAzureCredential()
-    );
-
+    const blobServiceClient =  await getBlobService()
     const containerClient = blobServiceClient.getContainerClient(containerName);
     await containerClient.createIfNotExists();
     const blockBlobClient = containerClient.getBlockBlobClient(fileName);

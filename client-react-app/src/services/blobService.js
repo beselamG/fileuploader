@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// upload blob request to the backend 
 export const uploadBlob = async (containerName, blobContents) => {
   try {
     const formData = new FormData();
@@ -15,12 +16,13 @@ export const uploadBlob = async (containerName, blobContents) => {
         "Content-Type": "multipart/form-data",
       },
     });
-    alert(JSON.stringify(response.data));
+    alert(response.data.data);
   } catch (error) {
     alert("somthing went wrong");
   }
 };
 
+// get a blob list for a reader user 
 export const getBlobs = async () => {
   try {
     const url = `${process.env.REACT_APP_API}/blob`;
@@ -32,15 +34,14 @@ export const getBlobs = async () => {
   }
 };
 
+// get a blob list for a writter user
 export const getBlobsWithVersions = async () => {
-    try {
-       
-      const url = `${process.env.REACT_APP_API}/blob/withVersion` ;
-      const response = await axios.get(url);
-      const containers = response.data.data;
-      return { data: containers, error: false, message: "" };
-    } catch (error) {
-      alert("somthing went wrong");
-    }
-  };
-  
+  try {
+    const url = `${process.env.REACT_APP_API}/blob/withVersion`;
+    const response = await axios.get(url);
+    const containers = response.data.data;
+    return { data: containers, error: false, message: "" };
+  } catch (error) {
+    alert("somthing went wrong");
+  }
+};

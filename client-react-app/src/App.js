@@ -5,18 +5,19 @@ import { getMsalConfig } from "./authConfig";
 import Main from "./Main";
 import { AppConfigurationClient } from "@azure/app-configuration";
 import { useEffect, useState } from "react";
-import { ApplicationInsights } from '@microsoft/applicationinsights-web'
+import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 
 function App() {
   const [uri, setUri] = useState(null);
 
-  const appInsights = new ApplicationInsights({ config: {
-    connectionString: 'InstrumentationKey=4905fa8a-d841-4d8d-9ffe-12631c4eccdf;IngestionEndpoint=https://westeurope-1.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/'
-    /* ...Other Configuration Options... */
-  } });
+  const appInsights = new ApplicationInsights({
+    config: {
+      connectionString:process.env.REACT_APP_INSIGHT      /* ...Other Configuration Options... */
+    },
+  });
 
   appInsights.loadAppInsights();
-appInsights.trackPageView();
+  appInsights.trackPageView();
 
   const getRedirectUri = async () => {
     const client = new AppConfigurationClient(

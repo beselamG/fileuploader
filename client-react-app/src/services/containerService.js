@@ -6,7 +6,7 @@ export const createContainer = async (containerName) => {
     const body = { containerName: containerName };
     const url = `${process.env.REACT_APP_API}/container`;
     const response = await axios.post(url, body);
-    alert(JSON.stringify(response.data));
+    alert(response.data.data);
   } catch (error) {
     alert("somthing went wrong");
   }

@@ -1,4 +1,3 @@
-
 import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
@@ -8,17 +7,18 @@ import AuthenticatedMain from "./components/AuthenticatedMain";
 import { SignInButton } from "./components/SignInButton";
 
 function Main() {
-  
   return (
-    <>
+    <div className="main">
       <AuthenticatedTemplate>
         <AuthenticatedMain />
       </AuthenticatedTemplate>
       <UnauthenticatedTemplate>
-        <SignInButton />
-        <p>You are not signed in! Please sign in.</p>
+        <div className="login">
+          <SignInButton />
+          <p>You are not signed in! Please sign in.</p>
+        </div>
       </UnauthenticatedTemplate>
-    </>
+    </div>
   );
 }
 

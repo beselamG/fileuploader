@@ -1,55 +1,48 @@
-import React, { useState } from "react";
+import React from "react";
 import Button from "react-bootstrap/Button";
-import Collapse from "react-bootstrap/Collapse";
-import { createContainer } from "../services/containerService";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
 
-const Container = () => {
-  const [open, setOpen] = useState(false);
-  const [containerName, setContainerName] = useState("");
-
-  const handleContainerCreateSubmit = (event) => {
-    event.preventDefault();
-    if (containerName.length > 2) {
-      createContainer(containerName);
-      setContainerName('')
-    } else {
-      alert("container name length must be 3 or more ");
-    }
-  };
-
-  const handleContainerChange = (event) => {
-    setContainerName(event.target.value);
-  };
-
+// a modal page for creating a new container 
+const Container = ({
+  show,
+  handleClose,
+  handleContainerChange,
+  handleSubmit,
+}) => {
   return (
     <div>
-      <Button
-        onClick={() => setOpen(!open)}
-        aria-controls="example-collapse-text"
-        aria-expanded={open}
+      <Modal
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        show={show}
+        onHide={handleClose}
       >
-        create container
-      </Button>
-      <Collapse in={open}>
-        <div id="example-collapse-text">
-          <form
-            className="containerForm"
-            onSubmit={handleContainerCreateSubmit}
-          >
-            <h2>Create Container</h2>
-            <label style={{ paddingBottom: 10 }}>Type Container Name</label>
-            <input
-              type="text"
-              value={containerName}
-              onChange={handleContainerChange}
-              style={{ marginBottom: 10 }}
-            />
-            <button className="formButton" type="submit">
-              Create
-            </button>
-          </form>
-        </div>
-      </Collapse>
+        <Modal.Header closeButton>
+          <Modal.Title>Create a Container</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label>Container name</Form.Label>
+              <Form.Control
+                onChange={handleContainerChange}
+                type="text"
+                placeholder=".. type here"
+                autoFocus
+              />
+              <Form.Text muted>
+                The container name must be atleast 3 letter
+              </Form.Text>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="dark" size="lg" onClick={handleSubmit}>
+            create
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

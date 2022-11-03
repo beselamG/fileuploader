@@ -16,6 +16,7 @@ export const handleLogout = async (instance) => {
   }
 };
 
+// request  an access tokenn for getting the user role 
 export const RequestAccessToken = async (instance, accounts) => {
   try {
     const request = {

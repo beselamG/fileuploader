@@ -12,11 +12,12 @@ export const SignOutButton = () => {
 
   return (
     <Button
-      variant="secondary"
-      className="ml-auto"
+      style= {{marginRight:10}}
+      className="d-flex"
+      variant="outline-success"
       onClick={() => handleLogout(instance)}
     >
-      Sign out using Redirect
+      Sign out 
     </Button>
   );
 };

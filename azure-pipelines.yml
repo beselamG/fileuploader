@@ -1,0 +1,38 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  paths:
+    include:
+    - bicep/*
+    exclude:
+    - client-react-app/*
+    - server-node-app/*
+  branches:
+    include:
+    - main
+
+variables:
+  name: 'teamaz-key-vaultPro'
+
+pool:
+  vmImage: windows-latest
+
+jobs:
+  - job: Deploy
+    steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: 'deploy main bicep file'
+        inputs:
+          deploymentScope: 'Resource Group'
+          azureResourceManagerConnection: 'assessment'
+          subscriptionId: '6b13e739-7ee2-437c-b6f2-7e58e5cfc457'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: 'rg-beselam-aug-we'
+          location: 'West Europe'
+          templateLocation: 'Linked artifact'
+          csmFile: 'bicep/main.bicep'
+          csmParametersFile: 'bicep/main.parameters.json'
+          deploymentMode: 'Incremental'

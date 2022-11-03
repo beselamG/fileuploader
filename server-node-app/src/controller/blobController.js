@@ -1,5 +1,5 @@
 const multer = require('multer')
-const { getBlobService } = require('../keyVault')
+const { getBlobService } = require('../config/keyVault')
 const upload = multer().single('file')
 
 const getBlobs = async (_req, res) => {

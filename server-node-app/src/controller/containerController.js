@@ -1,4 +1,4 @@
-const { getBlobService } = require('../keyVault')
+const { getBlobService } = require('../config/keyVault')
 
 const getContainers = async (req, res) => {
   try {

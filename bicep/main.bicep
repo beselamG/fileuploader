@@ -1,15 +1,17 @@
 param location string = resourceGroup().location
 param kvName string
-param objectId string 
-param objectIdApp string 
-param tenantId string 
+param objectId string
+param objectIdApp string
+param tenantId string
 param storageAccountName string
-param frontWebApp string 
-param backendWebApp string 
-param appInsightFront string 
+param funcStorageAccountName string
+param frontWebApp string
+param backendWebApp string
+param appInsightFront string
 param appInsightBackend string
 param appConfigName string
-
+param appInsightFunction string
+param functionAppName string
 
 resource appConfigStore 'Microsoft.AppConfiguration/configurationStores@2022-05-01' = {
   location: location
@@ -27,22 +29,21 @@ resource appConfigStore 'Microsoft.AppConfiguration/configurationStores@2022-05-
   name: appConfigName
 }
 
-
 module keyVault 'module/keyvault.bicep' = {
   name: 'keuvault'
   params: {
-    location:location
+    location: location
     name: kvName
-    objectIdApp:objectIdApp
-    objectIdB:objectId 
+    objectIdApp: objectIdApp
+    objectIdB: objectId
     tenantId: tenantId
   }
 }
- 
+
 module storageAccount 'module/storage_standard.bicep' = {
   name: 'fileUploaderstorage'
   params: {
-    storageName:storageAccountName
+    storageName: storageAccountName
     location: location
     sku: {
       name: 'Standard_LRS'
@@ -50,7 +51,7 @@ module storageAccount 'module/storage_standard.bicep' = {
     }
 
   }
-  dependsOn:[keyVault]
+  dependsOn: [ keyVault ]
 }
 
 resource srorageAccountNameSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
@@ -59,20 +60,20 @@ resource srorageAccountNameSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01'
   properties: {
     value: storageAccount.outputs.storageAccountName
   }
-  dependsOn:[storageAccount]
+  dependsOn: [ storageAccount ]
 }
 
 module appInsightFrontend 'module/appInsight.bicep' = {
   name: 'appInsightFron'
   params: {
-    name:appInsightFront
+    name: appInsightFront
     location: location
   }
 }
 module appInsightBack 'module/appInsight.bicep' = {
   name: 'appInsightBack'
   params: {
-    name:appInsightBackend
+    name: appInsightBackend
     location: location
   }
 }
@@ -90,7 +91,7 @@ module webAppServicePlan 'module/appServicePlan.bicep' = {
     }
 
   }
-  dependsOn:[storageAccount]
+  dependsOn: [ storageAccount ]
 }
 
 module webAppBack 'module/webAppService.bicep' = {
@@ -119,10 +120,8 @@ resource configStoreValueRcApi 'Microsoft.AppConfiguration/configurationStores/k
     contentType: 'string'
     value: 'https://${webAppBack.outputs.name}.azurewebsites.net'
   }
-  dependsOn:[webAppBack]
+  dependsOn: [ webAppBack ]
 }
-
-
 
 module webAppFront 'module/webAppService.bicep' = {
   name: 'frontendWebApp'
@@ -149,7 +148,7 @@ module webAppFront 'module/webAppService.bicep' = {
       }
     ]
   }
-  dependsOn:[webAppBack,appInsightFrontend]
+  dependsOn: [ webAppBack, appInsightFrontend ]
 }
 
 resource configStoreValueRedApi 'Microsoft.AppConfiguration/configurationStores/keyValues@2021-10-01-preview' = {
@@ -159,7 +158,53 @@ resource configStoreValueRedApi 'Microsoft.AppConfiguration/configurationStores/
     contentType: 'string'
     value: 'https://${webAppFront.outputs.name}.azurewebsites.net'
   }
-  dependsOn:[webAppFront]
+  dependsOn: [ webAppFront ]
 }
 
+module appServicePlanFunc 'module/appServicePlan.bicep' = {
+  name: 'appServicePlanFunc'
+  params: {
+    name: 'backupFunAppPlan'
+    location: location
+    kind: 'functionapp'
+    sku: {
+      name: 'Y1'
+      tier: 'Dynamic'
+    }
 
+  }
+
+}
+
+module appInsightFunc 'module/appInsight.bicep' = {
+  name: 'appInsightFunc'
+  params: {
+    name: appInsightFunction
+    location: location
+  }
+}
+
+module storageAccountFunc 'module/storage_standard.bicep' = {
+  name: 'fileUploaderFunStg'
+  params: {
+    storageName: funcStorageAccountName
+    location: location
+    sku: {
+      name: 'Standard_LRS'
+      tier: 'Standard'
+    }
+
+  }
+
+}
+
+module function 'module/function.bicep' = {
+  dependsOn: [ appServicePlanFunc ]
+  name: functionAppName
+  params: {
+    location: location
+    appInsightKey: appInsightFunc.outputs.instrumentationKey
+    appServicePlanId: appServicePlanFunc.outputs.apsId
+    storageAccountConnString: storageAccountFunc.outputs.storageAccountConnString
+  }
+}

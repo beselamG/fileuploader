@@ -31,6 +31,15 @@
     },
     "objectIdApp":{
       "value": "d2a26c4f-8cb7-457d-a693-16c2acaedcdd"
+    },
+    "appInsightFunction":{
+      "value": "appInsightEvtFuncion"
+    },
+    "functionAppName":{
+      "value": "backupEvtFuncion"
+    },
+    "funcStorageAccountName":{
+      "value": "backUpFuncStorage"
     }
 
   }

@@ -200,8 +200,9 @@ module storageAccountFunc 'module/storage_standard.bicep' = {
 
 module function 'module/function.bicep' = {
   dependsOn: [ appServicePlanFunc ]
-  name: functionAppName
+  name: 'backupfunname'
   params: {
+    name:functionAppName
     location: location
     appInsightKey: appInsightFunc.outputs.instrumentationKey
     appServicePlanId: appServicePlanFunc.outputs.apsId
